@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <title>주소로 장소 표시하기</title>
-   
-	
+    <title>그 밖의 요인 보정하기</title>
+
+
 </head>
+
 <body>
-   
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89601393cb4fc67204940f2e1b2f4ffa"></script>
+
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89601393cb4fc67204940f2e1b2f4ffa&libraries=services,clusterer,drawing"></script>
     <p style="margin-top:2px">
         <em class="link">
-            <a href="javascript:void(0);" onclick="window.open('http://samsung8841.com/layout/res/home.php?go=main', '_blank', 'width=981, height=650')">
-            허맵입니다..
+            <a href="javascript:void(0);"
+                onclick="window.open('http://samsung8841.com/layout/res/home.php?go=main', '_blank', 'width=981, height=650')">
+                허맵입니다..
             </a>
         </em>
     </p>
-    <!-- 지도를 표시할 div 입니다 -->
-    <div id="map" style="margin-top:30px;width:100%;height:550px;position:relative;border:2px solid green;"></div>
-    <script src="javadom.js"></script>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89601393cb4fc67204940f2e1b2f4ffa&libraries=LIBRARY"></script>
-<!-- services 라이브러리 불러오기 -->
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89601393cb4fc67204940f2e1b2f4ffa&libraries=services"></script>
-<!-- services와 clusterer, drawing 라이브러리 불러오기 -->
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89601393cb4fc67204940f2e1b2f4ffa&libraries=services,clusterer,drawing"></script>
 
-    
     <div class="map_wrap">
+        <div class="haddr">
+            <span class="title">지도중심기준 행정동검색</span>
+            <div id="centerAddr"></div>
 
-        <div id="menu_wrap" class="bg_white">
+        </div>
+
+        <div id="menu_wrap" class="bg_white" align="right">
             <div class="option">
                 <div>
                     <form onsubmit="searchPlaces(); return false;">
-                        키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
-                        <button type="submit">검색하기</button> 
+                        키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15">
+                        <button type="submit">검색하기</button>
                     </form>
                 </div>
             </div>
@@ -41,13 +41,112 @@
             <ul id="placesList"></ul>
             <div id="pagination"></div>
         </div>
+        <div id="map_type" align="right">
+            <P>
+                <button class="map_type_district" onclick="setOverlayMapTypeId('use_district')">지적도 보기</button>
+                <button class="map_type_road" onclick="setOverlayMapTypeId('roadview')">로드뷰 보기</button>
+                <button class="map_reset" onclick="mapTypeFirst()">지도 초기화</button>
+            </P>
+        </div>
+
+        <!-- 지도를 표시할 div 입니다 -->
+        <div id="map" style="margin-top:30px;width:100%;height:550px;position:relative;border:2px solid green;"></div>
+
     </div>
+
+    <script src="javadom.js"></script>
+
+    <!-- <div id="menu_wrap" class="bg_white">
+        <div class="option">
+            <div>
+                <form onsubmit="searchPlaces(); return false;">
+                    키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15">
+                    <button type="submit">검색하기</button>
+                </form>
+            </div>
+        </div>
+        <hr>
+        <ul id="placesList"></ul>
+        <div id="pagination"></div>
+    </div> -->
+
 
     <p>
         <button onclick="hideMarkers()">마커 감추기</button>
         <button onclick="showMarkers()">마커 보이기</button>
     </p>
 
-</body>
-</html>
+    <script> fetch("https://jsonplaceholder.typicode.com/posts/1").then((response) => console.log(response));</script>
 
+    <script>fetch("https://jsonplaceholder.typicode.com/posts")
+            .then((response) => response.json())
+            .then((data) => console.log(data));</script>
+
+    <script>fetch("https://jsonplaceholder.typicode.com/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: "Test",
+                body: "I am testing!",
+                userId: 1,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => console.log(data));</script>
+
+    <!-- ajax 로 하는 예제 -->
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <p>
+        <button id="callIndex">물가지수검색</button>
+    </p>
+    <div align="center">
+        <table id="tableIndex" style="border:1px solid; text-align:center;">
+            <colgroup>
+                <col width="200" />
+                <col width="200" />
+            </colgroup>
+            <thead>
+                <th>년도</th>
+                <th>값</th>
+            </thead>
+            <tbody id="table">
+            </tbody>
+        </table>
+    </div> -->
+
+    <p>
+        <button id="gongsiga">개별공시지가</button>
+    </p>
+
+    <div align="center">
+        <table id="tableGonsiga" style="border: 1px solid; text-align: center;">
+            <colgroup>
+                <col width="200" />
+                <col width="200" />
+                <col width="200" />
+                <col width="200" />
+            </colgroup>
+            <thead>
+                <th>소재지</th>
+                <th>지번</th>
+                <th>공시가격</th>
+                <th>공시년도</th>
+            </thead>
+            <tbody id="tablegongsi">
+                <tr>
+                    <td class="address"></td>
+                    <td class="jibun"></td>
+                    <td class="gongsiga"></td>
+                    <td class="stdryear"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</body>
+
+</html>
