@@ -70,7 +70,6 @@ var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입
 searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 
 // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다.
-// var pnu;
 kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
 	searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
 		if (status === kakao.maps.services.Status.OK) {
@@ -100,9 +99,9 @@ kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
 				if (status === kakao.maps.services.Status.OK) {
 					console.log(result1);
 					//전체 pnu 값
-					var pnu = result1[0].code + lowAddr2;
-					var lowAddr1 = "<div>" + "PNU : " + pnu + "</div>";
-					var content = '<div class="bAddr">' +
+					let pnu = result1[0].code + lowAddr2;
+					let lowAddr1 = "<div>" + "PNU : " + pnu + "</div>";
+					let content = '<div class="bAddr">' +
 						'<span class="title">법정동 주소정보</span>' +
 						detailAddr + lowAddr1 +
 						'</div>';
@@ -114,13 +113,11 @@ kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
 					// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
 					infowindow.setContent(content);
 					infowindow.open(map, marker);
-					return pnu;
 				}
 			});
 		}
 	});
 });
-// console.log(pnu);
 // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'idle', function () {
 	searchAddrFromCoords(map.getCenter(), displayCenterInfo);
@@ -190,31 +187,77 @@ function mapTypeFirst() {
 	map.removeOverlayMapTypeId(currentTypeId);
 }
 
+var pnuSearch = function (callback) {
+	var pnu;
+	kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+		searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
+			if (status === kakao.maps.services.Status.OK) {
+				// var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+				// detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+
+				//산지번을 pnu값으로 변경합니다.
+				if (result[0].address.mountain_yn == "N") {
+					mountain_yn = 1;
+				} else {
+					mountain_yn = 2;
+				}
+				//지번을 텍스트 값으로 변경시켜줌
+				main_address_no = ("000" + result[0].address.main_address_no).substr(-4, 4);
+
+				if (result[0].address.sub_address_no == 0) {
+					sub_address_no = "0000";
+				} else {
+					sub_address_no = ("000" + result[0].address.sub_address_no).substr(-4, 4);
+				}
+				//지번 pnu 변경
+				var lowAddr2 = mountain_yn + main_address_no + sub_address_no;
+
+
+				searchAddrFromCoords(mouseEvent.latLng, function (result1, status) {
+					if (status === kakao.maps.services.Status.OK) {
+						//전체 pnu 값
+						pnu = result1[0].code + lowAddr2;
+						// console.log(pnu);
+						callback(pnu);
+					}
+				});
+			}
+		});
+	});
+};
+// console.log(pnuSearch(displayGonsiga));
+// console.log(pnu);
 window.addEventListener("load", function () {
 	var gongsiga = document.querySelector("#gongsiga");
+	gongsiga.onclick = pnuSearch(displayGonsiga);
+});
+
+function displayGonsiga(pnu) {
+	// window.addEventListener("load", function () {
+	// var gongsiga = document.querySelector("#gongsiga");
 	var httpRequest;
-	gongsiga.onclick = function makeRequest() {
-		httpRequest = new XMLHttpRequest();
+	// gongsiga.onclick = function makeRequest() {
+	httpRequest = new XMLHttpRequest();
 
-		if (!httpRequest) {
-			alert('XMLHTTP 인스턴스를 만들 수가 없어요 ㅠㅠ');
-			return false;
-		}
-		httpRequest.onreadystatechange = alertContents;
-		// url = 'http://apis.data.go.kr/1611000/nsdi/IndvdLandPriceService/attr/getIndvdLandPriceAttr?ServiceKey=DCGCLKgxkKvdE%2F%2F3NNZJoNkacYaV%2BJ110w%2B1qi%2Bd9kWwYunxWXyWGJOfTNIZu6q1sqaeBm5p7b6uZQsxaNmqgw%3D%3D&pnu=1111017700102110000&stdrYear=2015&format=xml&numOfRows=10&pageNo=1'
-
-		var urlData = 'http://apis.data.go.kr/1611000/nsdi/IndvdLandPriceService/attr/getIndvdLandPriceAttr';
-		var serviceKey = "serviceKey=" + "DCGCLKgxkKvdE%2F%2F3NNZJoNkacYaV%2BJ110w%2B1qi%2Bd9kWwYunxWXyWGJOfTNIZu6q1sqaeBm5p7b6uZQsxaNmqgw%3D%3D";
-		var pnu = "&pnu=" + 1114010200101400000;
-		var stdrYear = "&stdrYear=" + 2020;
-		var format = "&format=" + 'xml';
-		var numOfRows = "&numOfRows=" + 10;
-		var pageNo = "&pageNo=" + 1;
-		var queryParams = '?' + serviceKey + pnu + stdrYear + format + numOfRows + pageNo;
-		var url = urlData + queryParams;
-		httpRequest.open('GET', url, true);
-		httpRequest.send();
+	if (!httpRequest) {
+		alert('XMLHTTP 인스턴스를 만들 수가 없어요 ㅠㅠ');
+		return false;
 	}
+	httpRequest.onreadystatechange = alertContents;
+	// url = 'http://apis.data.go.kr/1611000/nsdi/IndvdLandPriceService/attr/getIndvdLandPriceAttr?ServiceKey=DCGCLKgxkKvdE%2F%2F3NNZJoNkacYaV%2BJ110w%2B1qi%2Bd9kWwYunxWXyWGJOfTNIZu6q1sqaeBm5p7b6uZQsxaNmqgw%3D%3D&pnu=1111017700102110000&stdrYear=2015&format=xml&numOfRows=10&pageNo=1'
+
+	var urlData = 'http://apis.data.go.kr/1611000/nsdi/IndvdLandPriceService/attr/getIndvdLandPriceAttr';
+	var serviceKey = "serviceKey=" + "DCGCLKgxkKvdE%2F%2F3NNZJoNkacYaV%2BJ110w%2B1qi%2Bd9kWwYunxWXyWGJOfTNIZu6q1sqaeBm5p7b6uZQsxaNmqgw%3D%3D";
+	var pnuV = "&pnu=" + pnu;
+	var stdrYear = "&stdrYear=" + 2020;
+	var format = "&format=" + 'xml';
+	var numOfRows = "&numOfRows=" + 10;
+	var pageNo = "&pageNo=" + 1;
+	var queryParams = '?' + serviceKey + pnuV + stdrYear + format + numOfRows + pageNo;
+	var url = urlData + queryParams;
+	httpRequest.open('GET', url, true);
+	httpRequest.send();
+	// }
 
 	function alertContents() {
 		try {
@@ -241,8 +284,8 @@ window.addEventListener("load", function () {
 			alert('Caught Exception: ' + e.description);
 		}
 	}
-});
-
+	// });
+};
 //ajax 예제
 /*
 window.addEventListener("load", function () {
