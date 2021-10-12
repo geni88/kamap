@@ -14,8 +14,7 @@
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89601393cb4fc67204940f2e1b2f4ffa&libraries=services,clusterer,drawing"></script>
     <p style="margin-top:2px">
         <em class="link">
-            <a href="javascript:void(0);"
-                onclick="window.open('http://samsung8841.com/layout/res/home.php?go=main', '_blank', 'width=981, height=650')">
+            <a href="javascript:void(0);" onclick="window.open('http://naver.com', '_blank', 'width=981, height=650')">
                 허맵입니다..
             </a>
         </em>
@@ -31,8 +30,8 @@
         <div id="menu_wrap" class="bg_white" align="right">
             <div class="option">
                 <div>
-                    <form onsubmit="searchPlaces(); return false;">
-                        키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15">
+                    <form name="seeAdress" onsubmit="searchAdress(); return false;">
+                        주소로 검색하세요 : <input type="text" name="sawAdress" placeholder="가산디지털1로 226" size="15">
                         <button type="submit">검색하기</button>
                     </form>
                 </div>
@@ -124,12 +123,14 @@
     <div align="center">
         <table id="tableGonsiga" style="border: 1px solid; text-align: center;">
             <colgroup>
+                <col width="30" />
                 <col width="200" />
-                <col width="200" />
-                <col width="200" />
-                <col width="200" />
+                <col width="100" />
+                <col width="100" />
+                <col width="100" />
             </colgroup>
             <thead>
+                <th>연번</th>
                 <th>소재지</th>
                 <th>지번</th>
                 <th>공시가격</th>
@@ -137,10 +138,18 @@
             </thead>
             <tbody id="tablegongsi">
                 <tr>
-                    <td class="address"></td>
-                    <td class="jibun"></td>
-                    <td class="gongsiga"></td>
-                    <td class="stdryear"></td>
+                    <td class="num0"></td>
+                    <td class="address0"></td>
+                    <td class="jibun0"></td>
+                    <td class="gongsiga0"></td>
+                    <td class="stdryear0"></td>
+                </tr>
+                <tr>
+                    <td class="num1"></td>
+                    <td class="address1"></td>
+                    <td class="jibun1"></td>
+                    <td class="gongsiga1"></td>
+                    <td class="stdryear1"></td>
                 </tr>
             </tbody>
         </table>

@@ -69,6 +69,50 @@ var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입
 // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
 searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 
+//주소검색 입력값을 받고 주소검색.
+// function searchAdress(callback) {
+// 	var adressInfo = document.seeAdress.sawAdress.value;
+// 	// if (!adressInfo) {
+// 	// 	alert("주속검색란에 주소를 넣어주세요_jin");
+// 	// }
+
+// 	callback(adressInfo);
+// 	// return false
+// 	// return adressValue;
+
+// };
+// searchAdress(searchAdressInfo);
+
+function searchAdress() {
+	var adressInfo = document.seeAdress.sawAdress.value;
+
+	geocoder.addressSearch(adressInfo, function (result, status) {
+		// 정상적으로 검색이 완료됐으면 
+		//console.log(result);
+		if (status === kakao.maps.services.Status.OK) {
+			var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+			// 결과값으로 받은 위치를 마커로 표시합니다
+			var marker = new kakao.maps.Marker({
+				map: map,
+				position: coords
+			});
+
+			// 인포윈도우로 장소에 대한 설명을 표시합니다
+			var infowindow = new kakao.maps.InfoWindow({
+				content: '<div style="width:150px;text-align:center;padding:6px 0;">' + result[0].address.address_name + '</div>'
+			});
+			infowindow.open(map, marker);
+
+			// 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+			map.setCenter(coords);
+		} else {
+			alert("주소를 정확히 입력해 주세요");
+		}
+	});
+};
+
+
 // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다.
 kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
 	searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
@@ -137,7 +181,6 @@ function searchDetailAddrFromCoords(coords, callback) {
 function displayCenterInfo(result, status) {
 	if (status === kakao.maps.services.Status.OK) {
 		var infoDiv = document.getElementById('centerAddr');
-
 		for (var i = 0; i < result.length; i++) {
 			// 행정동의 region_type 값은 'H' 이므로
 			if (result[i].region_type === 'H') {
@@ -229,7 +272,9 @@ var pnuSearch = function (callback) {
 // console.log(pnu);
 window.addEventListener("load", function () {
 	var gongsiga = document.querySelector("#gongsiga");
-	gongsiga.onclick = pnuSearch(displayGonsiga);
+	gongsiga.onclick = function () {
+		pnuSearch(displayGonsiga);
+	}
 });
 
 function displayGonsiga(pnu) {
@@ -265,16 +310,20 @@ function displayGonsiga(pnu) {
 				if (httpRequest.status === 200) {
 					// var response = JSON.parse(httpRequest.responseText);
 					// console.log(response);
+
 					console.log(httpRequest.responseXML);
 					var xmlrequest = httpRequest.responseXML;
-					var idcodenum = xmlrequest.getElementsByTagName("ldCodeNm")[0].firstChild.data;
-					var bunji = xmlrequest.getElementsByTagName("mnnmSlno")[0].firstChild.data;
-					var gongsiga = xmlrequest.getElementsByTagName("pblntfPclnd")[0].firstChild.data;
-					var stdryear = xmlrequest.getElementsByTagName("stdrYear")[0].firstChild.data;
-					document.querySelector(".address").innerHTML = idcodenum;
-					document.querySelector(".jibun").innerHTML = bunji;
-					document.querySelector(".gongsiga").innerHTML = gongsiga;
-					document.querySelector(".stdryear").innerHTML = stdryear;
+					for (let i = 0; i < 2; i++) {
+						var idcodenum = xmlrequest.getElementsByTagName("ldCodeNm")[0].firstChild.data;
+						var bunji = xmlrequest.getElementsByTagName("mnnmSlno")[0].firstChild.data;
+						var gongsiga = xmlrequest.getElementsByTagName("pblntfPclnd")[0].firstChild.data;
+						var stdryear = xmlrequest.getElementsByTagName("stdrYear")[0].firstChild.data;
+						document.querySelector(".num" + i).innerHTML = i + 1;
+						document.querySelector(".address" + i).innerHTML = idcodenum;
+						document.querySelector(".jibun" + i).innerHTML = bunji;
+						document.querySelector(".gongsiga" + i).innerHTML = gongsiga;
+						document.querySelector(".stdryear" + i).innerHTML = stdryear;
+					}
 				} else {
 					alert('request에 뭔가 문제가 있어요.');
 				}
@@ -286,6 +335,7 @@ function displayGonsiga(pnu) {
 	}
 	// });
 };
+
 //ajax 예제
 /*
 window.addEventListener("load", function () {
