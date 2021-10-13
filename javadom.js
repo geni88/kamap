@@ -111,8 +111,6 @@ function searchAdress() {
 		}
 	});
 };
-
-
 // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다.
 kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
 	searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
@@ -120,7 +118,6 @@ kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
 			console.log(result);
 			var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
 			detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
 			//산지번을 pnu값으로 변경합니다.
 			if (result[0].address.mountain_yn == "N") {
 				mountain_yn = 1;
@@ -143,7 +140,7 @@ kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
 				if (status === kakao.maps.services.Status.OK) {
 					console.log(result1);
 					//전체 pnu 값
-					let pnu = result1[0].code + lowAddr2;
+					var pnu = result1[0].code + lowAddr2;
 					let lowAddr1 = "<div>" + "PNU : " + pnu + "</div>";
 					let content = '<div class="bAddr">' +
 						'<span class="title">법정동 주소정보</span>' +
@@ -229,10 +226,17 @@ function setOverlayMapTypeId(maptype) {
 function mapTypeFirst() {
 	map.removeOverlayMapTypeId(currentTypeId);
 }
-
+var pnuS = [];
+function addMarker(position) {
+	pnuS.push(position);
+}
+console.log(pnuS);
+// pnu값 받아서 callback 함수 사용시 지도 클릭시 바로 개공 표시됨.
 var pnuSearch = function (callback) {
+	// var pnuS = [];
 	var pnu;
 	kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+		addMarker(mouseEvent.latLng);
 		searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
 			if (status === kakao.maps.services.Status.OK) {
 				// var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
@@ -260,19 +264,25 @@ var pnuSearch = function (callback) {
 					if (status === kakao.maps.services.Status.OK) {
 						//전체 pnu 값
 						pnu = result1[0].code + lowAddr2;
+						// pnuS.push(pnu);
+
 						callback(pnu);
 					}
 				});
 			}
 		});
 	});
-};
+}; //callback
 // console.log(pnuSearch(displayGonsiga));
 // console.log(pnu);
 window.addEventListener("load", function () {
 	var gongsiga = document.querySelector("#gongsiga");
 	gongsiga.onclick = function () {
+		// for (var i = 0; i < pnuS.length; i++) {
+		// displayGonsiga(pnu);
 		pnuSearch(displayGonsiga);
+		// }
+
 	}
 });
 function displayGonsiga(pnu) {
