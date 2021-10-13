@@ -260,6 +260,8 @@ var pnuSearch = function (callback) {
 					if (status === kakao.maps.services.Status.OK) {
 						//전체 pnu 값
 						pnu = result1[0].code + lowAddr2;
+						//addPnuS(pnu);
+						// console.log(pnu);
 						callback(pnu);
 					}
 				});
@@ -267,14 +269,21 @@ var pnuSearch = function (callback) {
 		});
 	});
 };
+
+function addPnuS(pnu) {
+	pnuS.push(pnu);
+};
 // console.log(pnuSearch(displayGonsiga));
 // console.log(pnu);
 window.addEventListener("load", function () {
 	var gongsiga = document.querySelector("#gongsiga");
+	var gongsigaJson = new Array();
 	gongsiga.onclick = function () {
 		pnuSearch(displayGonsiga);
+		gongsigaJson.push(responseIndv);
 	}
 });
+//개별공시지가 연결 api
 function displayGonsiga(pnu) {
 	// window.addEventListener("load", function () {
 	// var gongsiga = document.querySelector("#gongsiga");
@@ -288,64 +297,46 @@ function displayGonsiga(pnu) {
 	}
 	httpRequest.onreadystatechange = alertContents;
 	// url = 'http://apis.data.go.kr/1611000/nsdi/IndvdLandPriceService/attr/getIndvdLandPriceAttr?ServiceKey=DCGCLKgxkKvdE%2F%2F3NNZJoNkacYaV%2BJ110w%2B1qi%2Bd9kWwYunxWXyWGJOfTNIZu6q1sqaeBm5p7b6uZQsxaNmqgw%3D%3D&pnu=1111017700102110000&stdrYear=2015&format=xml&numOfRows=10&pageNo=1'
-	//토지특성정보 api
-	var urlData = 'http://apis.data.go.kr/1611000/nsdi/LandCharacteristicsService/attr/getLandCharacteristics';
-	//개별공시지가 api
-	// var urlData = 'http://apis.data.go.kr/1611000/nsdi/IndvdLandPriceService/attr/getIndvdLandPriceAttr';
+
+	var urlData = 'http://apis.data.go.kr/1611000/nsdi/IndvdLandPriceService/attr/getIndvdLandPriceAttr';
 	var serviceKey = "serviceKey=" + "DCGCLKgxkKvdE%2F%2F3NNZJoNkacYaV%2BJ110w%2B1qi%2Bd9kWwYunxWXyWGJOfTNIZu6q1sqaeBm5p7b6uZQsxaNmqgw%3D%3D";
 	var pnuV = "&pnu=" + pnu;
 	var stdrYear = "&stdrYear=" + 2020;
-	var format = "&format=" + 'json'; //xml, json 형식 변경 가능
+	var format = "&format=" + 'json';
 	var numOfRows = "&numOfRows=" + 10;
 	var pageNo = "&pageNo=" + 1;
-	//개별공시지가 이용시 쿼리변수
-	// var queryParams = '?' + serviceKey + pnuV + stdrYear + format + numOfRows + pageNo;
-	var queryParams = '?' + serviceKey + pageNo + numOfRows + pnuV + stdrYear + format;
+	var queryParams = '?' + serviceKey + pnuV + stdrYear + format + numOfRows + pageNo;
 	var url = urlData + queryParams;
 	httpRequest.open('GET', url, true);
 	httpRequest.send();
 	// }
-
-	var gongsigaJson = new Array();
+	// var gongsigaJson = new Array();
+	//개별공시지가 호출
 	function alertContents() {
 		try {
 			if (httpRequest.readyState === httpRequest.DONE) {
 				if (httpRequest.status === 200) {
-					//json으로 받아오는 경우
 					var response = JSON.parse(httpRequest.responseText);
 					console.log(response);
-					// console.log(response.indvdLandPrices.field[0].ldCodeNm);
-
-					var responseLandCharacter = response.landCharacteristicss.field[0];
-					// var idcodenum = responseLandCharacter.ldCodeNm;
-					// var bunji = responseLandCharacter.mnnmSlno;
-					// var gimok = responseLandCharacter.lndcgrCodeNm;
-					// var acre = responseLandCharacter.lndpclAr;
-					// var uselandSchem = responseLandCharacter.prposArea1Nm;
-					// var roadSide = responseLandCharacter.roadSideCodeNm;
-					// var landShape = responseLandCharacter.tpgrphFrmCodeNm;
-					// var landTilt = responseLandCharacter.tpgrphHgCodeNm;
-					// var landUse = responseLandCharacter.ladUseSittnNm;
-					// var gongsiga = responseLandCharacter.pblntfPclnd;
+					//xml형식으로 받아올때
+					// var xmlrequest = httpRequest.responseXML;
+					var responseIndv = response.indvdLandPrices.field[0];
+					var idcodenum = responseIndv.ldCodeNm;
+					var bunji = responseIndv.mnnmSlno;
+					var gongsiga = responseIndv.pblntfPclnd;
 					//xml 로 데이터 추출시
 					// var gongsiga = xmlrequest.getElementsByTagName("pblntfPclnd")[0].firstChild.data; 
-					// var stdryear = responseLandCharacter.stdrYear;
+					var stdryear = responseIndv.stdrYear;
+					gongsigaJson.push(responseIndv);
+					for (let i = 0; i < 2; i++) {
 
-					gongsigaJson.push(responseLandCharacter);
 
-					for (let i = 0; i < gongsigaJson.length; i++) {
+
 						document.querySelector(".num" + i).innerHTML = i + 1;
-						document.querySelector(".address" + i).innerHTML = gongsigaJson[i].ldCodeNm;
-						document.querySelector(".jibun" + i).innerHTML = gongsigaJson[i].mnnmSlno;
-						document.querySelector(".gimok" + i).innerHTML = gongsigaJson[i].lndcgrCodeNm;
-						document.querySelector(".acre" + i).innerHTML = gongsigaJson[i].lndpclAr;
-						document.querySelector(".uselandschem" + i).innerHTML = gongsigaJson[i].prposArea1Nm;
-						document.querySelector(".roadside" + i).innerHTML = gongsigaJson[i].roadSideCodeNm;
-						document.querySelector(".landshape" + i).innerHTML = gongsigaJson[i].tpgrphFrmCodeNm;
-						document.querySelector(".landtilt" + i).innerHTML = gongsigaJson[i].tpgrphHgCodeNm;
-						document.querySelector(".landuse" + i).innerHTML = gongsigaJson[i].ladUseSittnNm;
-						document.querySelector(".gongsiga" + i).innerHTML = gongsigaJson[i].pblntfPclnd;
-						document.querySelector(".stdryear" + i).innerHTML = gongsigaJson[i].stdrYear;
+						document.querySelector(".address" + i).innerHTML = gongsigaJson[i].idcodenum;
+						document.querySelector(".jibun" + i).innerHTML = gongsigaJson[i].bunji;
+						document.querySelector(".gongsiga" + i).innerHTML = gongsigaJson[i].gongsiga;
+						document.querySelector(".stdryear" + i).innerHTML = gongsigaJson[i].stdryear;
 					}
 				} else {
 					alert('request에 뭔가 문제가 있어요.');
