@@ -53,8 +53,8 @@
 
     </div>
 
-    <script src="javadom.js"></script>
-    <!-- <script src="javadom copy.js"></script> -->
+    <!-- <script src="javadom.js"></script> -->
+    <script src="javadom copy.js"></script>
 
     <!-- <div id="menu_wrap" class="bg_white">
         <div class="option">
@@ -119,13 +119,15 @@
 
     <p>
         <button id="gongsiga">개별토지 특성</button>
+        <button id="landlikley">비교대상토지 추가</button>
     </p>
 
     <div align="center">
-        <table id="tableGonsiga" style="border: 1px solid; text-align: center;">
+        <table id="tablegonsiga" style="border: 1px solid; text-align: center;">
             <colgroup>
                 <col width="30" />
-                <col width="170" />
+                <col width="50" />
+                <col width="200" />
                 <col width="50" />
                 <col width="60" />
                 <col width="50" />
@@ -138,6 +140,7 @@
                 <col width="50" />
             </colgroup>
             <thead>
+                <th> <input type="button" class="del-button" value="삭제"></th>
                 <th>연번</th>
                 <th>소재지</th>
                 <th>지번</th>
@@ -151,8 +154,9 @@
                 <th>공시가격</th>
                 <th>년도</th>
             </thead>
-            <tbody id="tablegongsi">
+            <tbody class="table-gongsi">
                 <tr>
+                    <td><input type="checkbox" value="삭제"> </td>
                     <td class="num0"></td>
                     <td class="address0"></td>
                     <td class="jibun0"></td>
@@ -167,6 +171,7 @@
                     <td class="stdryear0"></td>
                 </tr>
                 <tr>
+                    <td><input type="checkbox" value="삭제"> </td>
                     <td class="num1"></td>
                     <td class="address1"></td>
                     <td class="jibun1"></td>
