@@ -406,8 +406,10 @@ window.addEventListener("load", function () {
 	delButton.onclick = () => {
 		var inputs = tbody.querySelectorAll("input[type =checkbox]:checked");
 		console.log(inputs.length);
-		for (var d = 0; d < inputs.length; d++)
+		for (var d = 0; d < inputs.length; d++) {
 			inputs[d].parentElement.parentElement.remove();
+		}
+
 	};
 
 	landlike.onclick = function () {
@@ -442,6 +444,9 @@ window.addEventListener("load", function () {
 				httpRequest.open('GET', url, true);
 				httpRequest.send();
 				// }
+				var template = document.querySelector("template");
+				var cloneNode = document.importNode(template.content, true);
+				var tds = cloneNode.querySelectorAll('td');
 
 				var gongsigaJson = new Array();
 				function alertContents() {
@@ -469,22 +474,37 @@ window.addEventListener("load", function () {
 								// var stdryear = responseLandCharacter.stdrYear;
 
 								gongsigaJson.push(responseLandCharacter);
+								console.log(gongsigaJson);
 
+
+								// 2개씩 보여줄지 선택해서 노드 결정.
 								for (let j = 0; j < gongsigaJson.length; j++) {
-									document.querySelector(".num" + index).innerHTML = index + 1;
-									document.querySelector(".address" + index).innerHTML = gongsigaJson[j].ldCodeNm;
-									document.querySelector(".jibun" + index).innerHTML = gongsigaJson[j].mnnmSlno;
-									document.querySelector(".gimok" + index).innerHTML = gongsigaJson[j].lndcgrCodeNm;
-									document.querySelector(".acre" + index).innerHTML = gongsigaJson[j].lndpclAr;
-									document.querySelector(".uselandschem" + index).innerHTML = gongsigaJson[j].prposArea1Nm;
-									document.querySelector(".roadside" + index).innerHTML = gongsigaJson[j].roadSideCodeNm;
-									document.querySelector(".landshape" + index).innerHTML = gongsigaJson[j].tpgrphFrmCodeNm;
-									document.querySelector(".landtilt" + index).innerHTML = gongsigaJson[j].tpgrphHgCodeNm;
-									document.querySelector(".landuse" + index).innerHTML = gongsigaJson[j].ladUseSittnNm;
-									document.querySelector(".gongsiga" + index).innerHTML = gongsigaJson[j].pblntfPclnd;
-									document.querySelector(".stdryear" + index).innerHTML = gongsigaJson[j].stdrYear;
-									// return index < 2;
+									// document.querySelector(".num" + index).innerHTML = index + 1;
+									// document.querySelector(".address" + index).innerHTML = gongsigaJson[j].ldCodeNm;
+									// document.querySelector(".jibun" + index).innerHTML = gongsigaJson[j].mnnmSlno;
+									// document.querySelector(".gimok" + index).innerHTML = gongsigaJson[j].lndcgrCodeNm;
+									// document.querySelector(".acre" + index).innerHTML = gongsigaJson[j].lndpclAr;
+									// document.querySelector(".uselandschem" + index).innerHTML = gongsigaJson[j].prposArea1Nm;
+									// document.querySelector(".roadside" + index).innerHTML = gongsigaJson[j].roadSideCodeNm;
+									// document.querySelector(".landshape" + index).innerHTML = gongsigaJson[j].tpgrphFrmCodeNm;
+									// document.querySelector(".landtilt" + index).innerHTML = gongsigaJson[j].tpgrphHgCodeNm;
+									// document.querySelector(".landuse" + index).innerHTML = gongsigaJson[j].ladUseSittnNm;
+									// document.querySelector(".gongsiga" + index).innerHTML = gongsigaJson[j].pblntfPclnd;
+									// document.querySelector(".stdryear" + index).innerHTML = gongsigaJson[j].stdrYear;
+									tds[1].innerHTML = index + 1;
+									tds[2].innerHTML = gongsigaJson[j].ldCodeNm;
+									tds[3].innerHTML = gongsigaJson[j].mnnmSlno;
+									tds[4].innerHTML = gongsigaJson[j].lndcgrCodeNm;
+									tds[5].innerHTML = gongsigaJson[j].lndpclAr;
+									tds[6].innerHTML = gongsigaJson[j].prposArea1Nm;
+									tds[7].innerHTML = gongsigaJson[j].roadSideCodeNm;
+									tds[8].innerHTML = gongsigaJson[j].tpgrphFrmCodeNm;
+									tds[9].innerHTML = gongsigaJson[j].tpgrphHgCodeNm;
+									tds[10].innerHTML = gongsigaJson[j].ladUseSittnNm;
+									tds[11].innerHTML = gongsigaJson[j].pblntfPclnd;
+									tds[12].innerHTML = gongsigaJson[j].stdrYear;
 								}
+								tbody.appendChild(cloneNode);
 							} else {
 								alert('request에 뭔가 문제가 있어요.');
 							}
@@ -496,7 +516,6 @@ window.addEventListener("load", function () {
 				}
 			});
 		}
-
 	}
 
 });
